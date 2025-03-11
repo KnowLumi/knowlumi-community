@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KnowLumi Community - A parallel education system for engineering students to unlock their potential and shape their careers.">
+    <meta property="og:title" content="KnowLumi Community">
+    <meta property="og:description" content="Unlock your potential with KnowLumi Community - A parallel education system for engineering students.">
+    <meta property="og:image" content="https://yourwebsite.com/image.jpg">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <title>KnowLumi Community</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Custom Styles -->
+    <style>
+        /* Glassmorphism Effect for Cards */
+        .professional-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .professional-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Connector Path Animation */
+        .connector-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLine 1.2s ease-out forwards;
+        }
+
+        /* Responsive Navbar */
+        @media (max-width: 768px) {
+            #menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.9);
+                padding: 1rem;
+                transition: opacity 0.3s ease, transform 0.3s ease;
+            }
+
+            #menu.hidden {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            #menu.flex {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animated Vertical Line */
+        @keyframes drawVerticalLine {
+            from {
+                height: 0;
+            }
+            to {
+                height: 100%;
+            }
+        }
+
+        .animate-line {
+            animation: drawVerticalLine 2s ease-out forwards;
+        }
+
+        /* Footer Hover Effects */
+        footer a:hover {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        /* Social Media Icons */
+        footer .fa-facebook-f:hover {
+            color: #1877F2;
+        }
+        footer .fa-twitter:hover {
+            color: #1DA1F2;
+        }
+        footer .fa-linkedin-in:hover {
+            color: #0A66C2;
+        }
+        footer .fa-instagram:hover {
+            color: #E4405F;
+        }
+
+        /* Newsletter Form Input */
+        footer input::placeholder {
+            color: #a0aec0;
+        }
+
+        footer input:focus {
+            outline: none;
+            border-color: #4ade80;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .dark-mode .professional-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .text-gray-300 {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .text-gray-400 {
+            color: #cbd5e0;
+        }
+
+        /* Dark Mode Toggle Icons */
+        #dark-mode-toggle {
+            cursor: pointer;
+        }
+
+        #moon-icon,
+        #sun-icon {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        #moon-icon.hidden,
+        #sun-icon.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white font-poppins">
+    <!-- Navbar -->
+    <header class="bg-black shadow-md fixed w-full top-0 z-50 transition-all">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-green-400">KnowLumi</h1>
+            <div class="flex items-center space-x-6">
+                <!-- Dark Mode Toggle -->
+                <button id="dark-mode-toggle" class="text-gray-300 hover:text-green-400 transition">
+                    <i id="moon-icon" class="fas fa-moon text-2xl"></i>
+                    <i id="sun-icon" class="fas fa-sun text-2xl hidden"></i>
+                </button>
+                <!-- Mobile Menu Button -->
+                <button id="menu-btn" class="md:hidden text-white text-3xl focus:outline-none">☰</button>
+            </div>
+            <nav>
+                <ul id="menu" class="hidden md:flex space-x-6 text-gray-300">
+                    <li><a href="#home" class="nav-link hover:text-green-400">Home</a></li>
+                    <li><a href="#about" class="nav-link hover:text-green-400">About</a></li>
+                    <li><a href="#programs" class="nav-link hover:text-green-400">Programs</a></li>
+                    <li><a href="#chapters" class="nav-link hover:text-green-400">Campus Chapters</a></li>
+                    <li><a href="#groups" class="nav-link hover:text-green-400">Interest Groups</a></li>
+                    <li><a href="#careers" class="nav-link hover:text-green-400">Careers</a></li>
+                    <li><a href="#contact" class="nav-link hover:text-green-400">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="flex flex-col items-center justify-center text-center min-h-screen bg-black px-6 pt-24">
+        <h2 class="text-4xl sm:text-5xl font-bold text-green-400 leading-tight animate-float">Shape a Career Beyond <br> Classroom</h2>
+        <p class="text-base sm:text-lg text-gray-300 max-w-3xl mt-4 animate-float" style="animation-delay: 0.2s">
+            Unlock Your Potential with <span class="text-green-400 font-semibold">KnowLumi School</span> - A Parallel Education System for Engineering Students.
+        </p>
+        <p class="text-sm sm:text-base text-gray-400 max-w-2xl mt-2 animate-float" style="animation-delay: 0.4s">
+            The subjects you're studying in college might not be enough to build the career you're dreaming of. 
+            To achieve true success, you need to go beyond the syllabus. That's where KnowLumi School comes in.
+        </p>
+        <a href="#programs" class="mt-6 bg-green-500 text-black px-6 py-3 rounded-full font-bold text-lg hover:bg-green-600 transition animate-float" style="animation-delay: 0.6s">
+            Get Started
+        </a>
+    </section>
+
+    <!-- Discover KnowLumi Community -->
+    <section class="py-16 px-6 bg-gradient-to-br from-green-900 via-teal-900 to-black text-center">
+        <h2 class="text-4xl font-bold text-green-300 mb-8 animate-slideIn">Discover KnowLumi Community!</h2>
+        <p class="text-lg text-gray-200 max-w-3xl mx-auto mb-10 animate-slideIn" style="animation-delay: 0.2s">
+            Are you ready to break the limits of traditional learning? KnowLumi Community is more than just a group—it’s a movement dedicated to empowering learners beyond the classroom. Dive in and experience the future of education!
+        </p>
+        <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+            <div class="professional-card p-8 animate-slideIn" style="animation-delay: 0.4s">
+                <h3 class="text-3xl font-bold text-green-300 mb-4">Engage</h3>
+                <p class="text-gray-300 text-lg text-center">Join a vibrant community where ideas turn into action. Participate in tech meetups, discussions, and interactive sessions.</p>
+            </div>
+            <div class="professional-card p-8 animate-slideIn" style="animation-delay: 0.6s">
+                <h3 class="text-3xl font-bold text-teal-300 mb-4">Connect</h3>
+                <p class="text-gray-300 text-lg text-center">Surround yourself with industry professionals, mentors, and passionate learners to build lifelong relationships.</p>
+            </div>
+            <div class="professional-card p-8 animate-slideIn" style="animation-delay: 0.8s">
+                <h3 class="text-3xl font-bold text-green-300 mb-4">Create</h3>
+                <p class="text-gray-300 text-lg text-center">Turn your ideas into reality! Innovate, experiment, and build projects with support from a thriving community.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Impact of KnowLumi Community -->
+    <section class="py-16 px-6 bg-gradient-to-br from-teal-900 via-black to-green-900 text-center">
+        <h2 class="text-4xl font-bold text-green-300 mb-8 animate-slideIn">The Impact of KnowLumi Community</h2>
+        <p class="text-lg text-gray-200 max-w-3xl mx-auto mb-10 animate-slideIn" style="animation-delay: 0.2s">
+            Over the years, KnowLumi Community has empowered thousands of students, professionals, and educators with valuable knowledge, hands-on skills, and expert mentorship.  
+            Join us to gain industry experience, expand your network, and take a step closer to your dream career!
+        </p>
+        <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+            <div class="professional-card p-10 animate-slideIn" style="animation-delay: 0.4s">
+                <h3 class="text-4xl font-bold text-teal-300 mb-4">10,000+ Learners</h3>
+                <p class="text-gray-300 text-lg text-center">A thriving community of students and professionals transforming their careers with KnowLumi.</p>
+            </div>
+            <div class="professional-card p-10 animate-slideIn" style="animation-delay: 0.6s">
+                <h3 class="text-4xl font-bold text-green-300 mb-4">500+ Mentors</h3>
+                <p class="text-gray-300 text-lg text-center">Industry experts, tech leaders, and educators providing guidance and support on your journey.</p>
+            </div>
+            <div class="professional-card p-10 animate-slideIn" style="animation-delay: 0.8s">
+                <h3 class="text-4xl font-bold text-teal-300 mb-4">100+ Events & Workshops</h3>
+                <p class="text-gray-300 text-lg text-center">Interactive workshops, hackathons, and career-focused events to sharpen your skills and grow.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Flowchart Section -->
+    <section id="flowchart" class="py-16 px-6 bg-gradient-to-br from-teal-900 via-black to-green-900 text-center">
+        <h2 class="text-4xl font-bold text-green-300 mb-8 animate-slideIn">How KnowLumi Works</h2>
+        <p class="text-lg text-gray-200 max-w-3xl mx-auto mb-10 animate-slideIn" style="animation-delay: 0.2s">
+            Follow our six-step process to unlock your potential and achieve your career goals.
+        </p>
+        <div class="relative max-w-6xl mx-auto">
+            <!-- Animated Vertical Line -->
+            <div class="absolute left-1/2 h-full w-1 bg-gray-700/50 -translate-x-1/2">
+                <div id="animated-line" class="h-0 w-full bg-green-300"></div>
+            </div>
+
+            <!-- Step 1: Learn by Doing -->
+            <div class="professional-card mb-16 p-8 max-w-xl ml-0 mr-auto relative animate-float">
+                <div class="flex items-start gap-6">
+                    <div class="w-16 h-16 rounded-xl bg-teal-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-tasks text-2xl text-teal-300"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">Learn by Doing</h3>
+                        <p class="text-gray-300 mb-4">Complete tasks, challenges, and activities.</p>
+                    </div>
+                </div>
+                <svg class="connector absolute left-full top-1/2 w-24 h-24 -translate-y-12" viewBox="0 0 100 100">
+                    <path class="connector-path" d="M0 50 Q50 50 100 100" stroke="#4F46E5" fill="none" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <!-- Step 2: Earn Lumi Points -->
+            <div class="professional-card mb-16 p-8 max-w-xl ml-auto mr-0 relative animate-float" style="animation-delay: 0.2s;">
+                <div class="flex items-start gap-6">
+                    <div class="w-16 h-16 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-star text-2xl text-purple-300"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">Earn Lumi Points</h3>
+                        <p class="text-gray-300 mb-4">Gain points for participation and achievements.</p>
+                    </div>
+                </div>
+                <svg class="connector absolute right-full top-1/2 w-24 h-24 -translate-y-12" viewBox="0 0 100 100">
+                    <path class="connector-path" d="M100 50 Q50 50 0 100" stroke="#4F46E5" fill="none" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <!-- Step 3: Claim Lumi Coins -->
+            <div class="professional-card mb-16 p-8 max-w-xl ml-0 mr-auto relative animate-float" style="animation-delay: 0.4s;">
+                <div class="flex items-start gap-6">
+                    <div class="w-16 h-16 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-coins text-2xl text-blue-300"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">Claim Lumi Coins</h3>
+                        <p class="text-gray-300 mb-4">Convert Lumi Points into Lumi Coins.</p>
+                    </div>
+                </div>
+                <svg class="connector absolute left-full top-1/2 w-24 h-24 -translate-y-12" viewBox="0 0 100 100">
+                    <path class="connector-path" d="M0 50 Q50 50 100 100" stroke="#4F46E5" fill="none" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <!-- Step 4: Climb the Leaderboard -->
+            <div class="professional-card mb-16 p-8 max-w-xl ml-auto mr-0 relative animate-float" style="animation-delay: 0.6s;">
+                <div class="flex items-start gap-6">
+                    <div class="w-16 h-16 rounded-xl bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-trophy text-2xl text-green-300"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">Climb the Leaderboard</h3>
+                        <p class="text-gray-300 mb-4">Rank higher and join the student leadership team.</p>
+                    </div>
+                </div>
+                <svg class="connector absolute right-full top-1/2 w-24 h-24 -translate-y-12" viewBox="0 0 100 100">
+                    <path class="connector-path" d="M100 50 Q50 50 0 100" stroke="#4F46E5" fill="none" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <!-- Step 5: Lumi Cart -->
+            <div class="professional-card mb-16 p-8 max-w-xl ml-0 mr-auto relative animate-float" style="animation-delay: 0.8s;">
+                <div class="flex items-start gap-6">
+                    <div class="w-16 h-16 rounded-xl bg-pink-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-shopping-cart text-2xl text-pink-300"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">Lumi Cart</h3>
+                        <p class="text-gray-300 mb-4">Use Lumi Coins to purchase products.</p>
+                    </div>
+                </div>
+                <svg class="connector absolute left-full top-1/2 w-24 h-24 -translate-y-12" viewBox="0 0 100 100">
+                    <path class="connector-path" d="M0 50 Q50 50 100 100" stroke="#4F46E5" fill="none" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <!-- Step 6: KnowLumi School -->
+            <div class="professional-card mb-16 p-8 max-w-xl ml-auto mr-0 relative animate-float" style="animation-delay: 1s;">
+                <div class="flex items-start gap-6">
+                    <div class="w-16 h-16 rounded-xl bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-graduation-cap text-2xl text-yellow-300"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">KnowLumi School</h3>
+                        <p class="text-gray-300 mb-4">Learn premium content from industry experts.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white py-16 mt-auto">
+        <div class="max-w-6xl mx-auto px-4">
+            <!-- Grid Layout for Desktop -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- About Section -->
+                <div class="mb-8 md:mb-0">
+                    <h3 class="text-2xl font-bold text-green-400 mb-4">KnowLumi</h3>
+                    <p class="text-gray-300 text-sm mb-4">
+                        Empowering learners beyond the classroom. Join the movement to unlock your potential and shape your career.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-green-400 transition" aria-label="Facebook">
+                            <i class="fab fa-facebook-f text-2xl"></i>
+                        </a>
+                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-green-400 transition" aria-label="Twitter">
+                            <i class="fab fa-twitter text-2xl"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-green-400 transition" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in text-2xl"></i>
+                        </a>
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-green-400 transition" aria-label="Instagram">
+                            <i class="fab fa-instagram text-2xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="mb-8 md:mb-0">
+                    <h4 class="text-xl font-semibold text-green-400 mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-300 hover:text-green-400 transition">Home</a></li>
+                        <li><a href="#about" class="text-gray-300 hover:text-green-400 transition">About</a></li>
+                        <li><a href="#programs" class="text-gray-300 hover:text-green-400 transition">Programs</a></li>
+                        <li><a href="#chapters" class="text-gray-300 hover:text-green-400 transition">Campus Chapters</a></li>
+                        <li><a href="#groups" class="text-gray-300 hover:text-green-400 transition">Interest Groups</a></li>
+                        <li><a href="#careers" class="text-gray-300 hover:text-green-400 transition">Careers</a></li>
+                        <li><a href="#contact" class="text-gray-300 hover:text-green-400 transition">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="mb-8 md:mb-0">
+                    <h4 class="text-xl font-semibold text-green-400 mb-4">Contact Us</h4>
+                    <ul class="space-y-2">
+                        <li class="text-gray-100"><i class="fas fa-map-marker-alt text-green-400 mr-2"></i>123 Knowledge Street, EduCity</li>
+                        <li class="text-gray-100"><i class="fas fa-envelope text-green-400 mr-2"></i>info@knowlumi.com</li>
+                        <li class="text-gray-100"><i class="fas fa-phone text-green-400 mr-2"></i>+1 234 567 890</li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter Subscription -->
+                <div class="flex flex-col items-center text-center">
+                    <h4 class="text-xl font-semibold text-green-400 mb-4">Follow Our WhatsApp Channel</h4>
+                    <p class="text-gray-300 text-sm mb-4">
+                        Stay updated with the latest updates, events, and opportunities from KnowLumi.
+                    </p>
+                    
+                    <a href="https://chat.whatsapp.com/FdfjFCI3oTDJdcaQ6HJBDF" target="_blank" 
+                       class="bg-green-500 text-black px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition flex items-center justify-center">
+                        <i class="fab fa-whatsapp text-xl mr-2"></i> Join WhatsApp Channel
+                    </a>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center">
+                <p class="text-gray-400">&copy; <span id="year"></span> KnowLumi Community. All rights reserved.</p>
+                <p class="text-gray-400 text-sm mt-2">Designed with ❤️ by KnowLumi</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Navbar Toggle
+        const menuBtn = document.getElementById("menu-btn");
+        const menu = document.getElementById("menu");
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        menuBtn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+            menu.classList.toggle("flex");
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener("click", () => {
+                menu.classList.add("hidden");
+                menu.classList.remove("flex");
+            });
+        });
+
+        // Update Year in Footer
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        // Intersection Observer for Animations
+        const animateElements = document.querySelectorAll(".animate-float, .animate-slideIn");
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("animate-float", "animate-slideIn");
+                    observer.unobserve(entry.target); // Stop observing after animation
+                }
+            });
+        }, { threshold: 0.5 });
+
+        animateElements.forEach((element) => {
+            observer.observe(element);
+        });
+
+        // Function to check if an element is in the viewport
+        function isInViewport(element) {
+            const rect = element.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        // Function to handle the scroll event
+        function handleScroll() {
+            const flowchartSection = document.getElementById('flowchart');
+            const animatedLine = document.getElementById('animated-line');
+
+            if (isInViewport(flowchartSection)) {
+                animatedLine.classList.add('animate-line');
+                // Remove the event listener after the animation is triggered
+                window.removeEventListener('scroll', handleScroll);
+            }
+        }
+
+        // Add scroll event listener
+        window.addEventListener('scroll', handleScroll);
+
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const moonIcon = document.getElementById('moon-icon');
+        const sunIcon = document.getElementById('sun-icon');
+
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+
+            // Toggle icons
+            moonIcon.classList.toggle('hidden');
+            sunIcon.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
