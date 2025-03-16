@@ -1,0 +1,229 @@
+/* Glassmorphism Effect for Cards */
+.professional-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.professional-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Connector Path Animation */
+.connector-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawLine 1.2s ease-out forwards;
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+    #menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 1rem;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    #menu.hidden {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    #menu.flex {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animated Vertical Line */
+@keyframes drawVerticalLine {
+    from {
+        height: 0;
+    }
+    to {
+        height: 100%;
+    }
+}
+
+.animate-line {
+    animation: drawVerticalLine 2s ease-out forwards;
+}
+
+/* Footer Hover Effects */
+footer a:hover {
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* Social Media Icons */
+footer .fa-facebook-f:hover {
+    color: #1877F2;
+}
+footer .fa-twitter:hover {
+    color: #1DA1F2;
+}
+footer .fa-linkedin-in:hover {
+    color: #0A66C2;
+}
+footer .fa-instagram:hover {
+    color: #E4405F;
+}
+
+/* Newsletter Form Input */
+footer input::placeholder {
+    color: #a0aec0;
+}
+
+footer input:focus {
+    outline: none;
+    border-color: #4ade80;
+}
+
+/* Smooth Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Horizontal Scrollable Container */
+.scroll-smooth {
+    scroll-behavior: smooth;
+}
+
+.snap-x {
+    scroll-snap-type: x mandatory;
+}
+
+.snap-center {
+    scroll-snap-align: center;
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+
+/* Glassmorphism Effect */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.glass:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Arrow Divider */
+.arrow {
+    width: 2px;
+    height: 40px;
+    background: white;
+    margin: 20px auto;
+    position: relative;
+}
+
+.arrow::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -10px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 10px solid white;
+}
+
+
+/* Professional Card Styling */
+.professional-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.professional-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slideIn {
+    animation: slideIn 0.8s ease-out forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    /* Mobile Styles */
+    .professional-card {
+        padding: 1rem; /* Reduce padding for small screens */
+    }
+    h2 {
+        font-size: 2rem; /* Smaller heading for mobile */
+    }
+    h3 {
+        font-size: 1.5rem; /* Smaller subheading for mobile */
+    }
+    p {
+        font-size: 0.9rem; /* Smaller text for mobile */
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    /* Tablet Styles */
+    .grid {
+        grid-template-columns: repeat(2, 1fr); /* 2-column grid for tablets */
+    }
+    h2 {
+        font-size: 2.5rem; /* Medium heading for tablets */
+    }
+    h3 {
+        font-size: 1.75rem; /* Medium subheading for tablets */
+    }
+    p {
+        font-size: 1rem; /* Medium text for tablets */
+    }
+}
+
+@media (min-width: 1025px) {
+    /* Laptop/Desktop Styles */
+    .grid {
+        grid-template-columns: repeat(4, 1fr); /* 4-column grid for desktops */
+    }
+    h2 {
+        font-size: 3rem; /* Larger heading for desktops */
+    }
+    h3 {
+        font-size: 2rem; /* Larger subheading for desktops */
+    }
+    p {
+        font-size: 1.1rem; /* Larger text for desktops */
+    }
+}
