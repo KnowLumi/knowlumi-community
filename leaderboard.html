@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumi Community Leaderboard</title>
+    <!-- Use the same fonts, Tailwind, and styles as index.html -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white font-poppins">
+    <section class="py-16 px-6 bg-gradient-to-br from-black via-green-900 to-teal-900 min-h-screen flex flex-col items-center justify-center">
+      <div class="max-w-3xl w-full mx-auto glass p-8 rounded-2xl shadow-2xl">
+        <h2 class="text-3xl sm:text-4xl font-bold text-green-300 mb-8 text-center animate-slideIn">🌟 Lumi Community Leaderboard</h2>
+        <div class="flex flex-col md:flex-row flex-wrap gap-4 md:gap-8 items-center justify-center mb-8 animate-slideIn">
+          <div>
+            <select id="durationFilter" onchange="applyFilters(); if(window.innerWidth<640)renderMobileLeaderboard();" class="w-full max-w-full bg-gray-900 text-green-200 border border-green-600 rounded-lg px-4 py-2 font-extrabold text-lg text-center focus:outline-none focus:ring-2 focus:ring-green-400">
+              <option value="" disabled selected class="text-black font-extrabold">-- Select Duration --</option>
+              <option value="totalPoints">All Time</option>
+              <option value="yearPoints">This Year</option>
+              <option value="monthPoints">This Month</option>
+            </select>
+          </div>
+          <div>
+            <select id="locationType" onchange="populateLocationValues(); if(window.innerWidth<640)renderMobileLeaderboard();" class="w-full max-w-full bg-gray-900 text-green-200 border border-green-600 rounded-lg px-4 py-2 font-extrabold text-lg text-center focus:outline-none focus:ring-2 focus:ring-green-400">
+              <option value="" disabled selected class="text-black font-extrabold">-- Select Location Type --</option>
+              <option value="all">All</option>
+              <option value="state">State</option>
+              <option value="zone">Zone</option>
+              <option value="district">District</option>
+              <option value="campus">Campus</option>
+            </select>
+          </div>
+          <div>
+            <select id="locationValue" onchange="applyFilters(); if(window.innerWidth<640)renderMobileLeaderboard();" class="w-full max-w-full bg-gray-900 text-green-200 border border-green-600 rounded-lg px-4 py-2 font-extrabold text-lg text-center focus:outline-none focus:ring-2 focus:ring-green-400">
+              <option value="" disabled selected class="text-black font-extrabold">-- Select Location --</option>
+            </select>
+          </div>
+        </div>
+        <div class="rounded-xl animate-slideIn">
+          <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full border-collapse text-left">
+              <thead>
+                <tr class="bg-gradient-to-r from-green-700 to-emerald-600 text-white">
+                  <th class="py-3 px-4">Rank</th>
+                  <th class="py-3 px-4">Lumi ID</th>
+                  <th class="py-3 px-4">Name</th>
+                  <th class="py-3 px-4">Points</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody" class="bg-black/60">
+                <tr><td colspan="4" class="py-6 text-center text-green-300">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sm:hidden" id="leaderboardCards"></div>
+        </div>
+        <script>
+        // Patch: Render cards for mobile view
+        function renderMobileLeaderboard() {
+          const container = document.getElementById('leaderboardCards');
+          if (!container) return;
+          container.innerHTML = '';
+          let filtered = [...rawData];
+          const duration = document.getElementById('durationFilter')?.value || 'totalPoints';
+          const locationType = document.getElementById('locationType')?.value || 'all';
+          const locationValue = document.getElementById('locationValue')?.value || 'all';
+          if (
+            locationType !== "all" &&
+            locationType !== "" &&
+            locationValue !== "all" &&
+            locationValue !== ""
+          ) {
+            if (locationType === "campus" && window.campusKey) {
+              filtered = filtered.filter(row => row[window.campusKey] === locationValue);
+            } else {
+              filtered = filtered.filter(row => row[locationType] === locationValue);
+            }
+          }
+          filtered.sort((a, b) => b[duration] - a[duration]);
+          let prevScore = null;
+          let rank = 0;
+          let actualRank = 0;
+          let hasValidRows = false;
+          for (let i = 0; i < filtered.length; i++) {
+            const row = filtered[i];
+            const score = row[duration];
+            if (!score || score === 0) continue;
+            hasValidRows = true;
+            if (score !== prevScore) {
+              actualRank++;
+              rank = actualRank;
+            }
+            prevScore = score;
+            const card = document.createElement('div');
+            card.className = 'rounded-xl mb-6 p-4 shadow flex flex-col gap-2 border-l-4 border-green-400 bg-gradient-to-br from-gray-900/80 via-green-900/40 to-black/70';
+            card.innerHTML = `
+              <div class="flex justify-between"><span class="font-bold text-green-300">Rank</span><span>${rank}</span></div>
+              <div class="flex justify-between"><span class="font-bold text-green-300">Lumi ID</span><span>${row.id ?? ''}</span></div>
+              <div class="flex justify-between"><span class="font-bold text-green-300">Name</span><span>${row.name ?? ''}</span></div>
+              <div class="flex justify-between"><span class="font-bold text-green-300">Points</span><span>${score ?? ''}</span></div>
+            `;
+            container.appendChild(card);
+          }
+          if (!hasValidRows) {
+            container.innerHTML = '<div class="py-6 text-center text-green-300">No data found.</div>';
+          }
+        }
+        // Patch: Call renderMobileLeaderboard on filter changes
+        const origApplyFilters = window.applyFilters;
+        window.applyFilters = function() {
+          origApplyFilters();
+          if (window.innerWidth < 640) renderMobileLeaderboard();
+        };
+        // Patch: Call renderMobileLeaderboard after data loads
+        const origFetchData = window.fetchData;
+        window.fetchData = async function() {
+          await origFetchData();
+          if (window.innerWidth < 640) renderMobileLeaderboard();
+        };
+        // Patch: Responsive switch
+        window.addEventListener('resize', function() {
+          if (window.innerWidth < 640) renderMobileLeaderboard();
+          else document.getElementById('leaderboardCards').innerHTML = '';
+        });
+        </script>
+      </div>
+    </section>
+    <script>
+      let rawData = [];
+      async function fetchData() {
+        try {
+          const resp = await fetch('https://script.google.com/macros/s/AKfycbwbSZv6LCM83f9NUGu-qKZBn4BiVqCCueuv3eE5YUU5avt6zOtv_xrlSR_Qp5UyRUDy/exec?action=getLeaderboardData');
+          rawData = await resp.json();
+          populateLocationValues();
+          applyFilters();
+        } catch (e) {
+          document.getElementById('leaderboardBody').innerHTML = '<tr><td colspan="4">Failed to load data.</td></tr>';
+        }
+      }
+      function populateLocationValues() {
+        const locationType = document.getElementById('locationType').value;
+        const locationSelect = document.getElementById('locationValue');
+        locationSelect.innerHTML = '';
+        const allOpt = document.createElement("option");
+        allOpt.value = "all";
+        allOpt.textContent = "All";
+        locationSelect.appendChild(allOpt);
+
+        let key = locationType;
+        // Fallback logic for campus
+        if (locationType === "campus") {
+          // Try to find a campus-like key from the first row
+          const campusKeys = ["campus", "campusName", "college", "collegeName", "institute", "instituteName"];
+          const sample = rawData && rawData.length ? rawData[0] : null;
+          if (sample) {
+            key = campusKeys.find(k => k in sample) || "campus";
+          }
+          window.campusKey = key; // Store globally for filtering
+        } else {
+          window.campusKey = null;
+        }
+
+        if (locationType === "all" || locationType === "") {
+          applyFilters();
+          return;
+        }
+        const uniqueValues = [...new Set(rawData.map(row => row[key]).filter(v => v))].sort();
+        uniqueValues.forEach(val => {
+          const opt = document.createElement("option");
+          opt.value = val;
+          opt.textContent = val;
+          locationSelect.appendChild(opt);
+        });
+        applyFilters();
+      }
+      function applyFilters() {
+        const duration = document.getElementById('durationFilter').value;
+        const locationType = document.getElementById('locationType').value;
+        const locationValue = document.getElementById('locationValue').value;
+        let filtered = [...rawData];
+        if (
+          locationType !== "all" &&
+          locationType !== "" &&
+          locationValue !== "all" &&
+          locationValue !== ""
+        ) {
+          if (locationType === "campus" && window.campusKey) {
+            filtered = filtered.filter(row => row[window.campusKey] === locationValue);
+          } else {
+            filtered = filtered.filter(row => row[locationType] === locationValue);
+          }
+        }
+        filtered.sort((a, b) => b[duration] - a[duration]);
+        const tbody = document.getElementById('leaderboardBody');
+        tbody.innerHTML = '';
+        const medals = ["🥇", "🥈", "🥉"];
+        let rank = 0;
+        let prevScore = null;
+        let actualRank = 0;
+        let hasValidRows = false;
+        for (let i = 0; i < filtered.length; i++) {
+          const row = filtered[i];
+          const score = row[duration];
+          if (!score || score === 0) continue;
+          hasValidRows = true;
+          if (score !== prevScore) {
+            actualRank++;
+            rank = actualRank;
+          }
+          prevScore = score;
+          const rankDisplay = rank;
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td class="py-3 px-4 text-left">${rankDisplay}</td>
+            <td class="py-3 px-4 text-left">${row.id ?? ''}</td>
+            <td class="py-3 px-4 text-left">${row.name ?? ''}</td>
+            <td class="py-3 px-4 text-left">${score ?? ''}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+        if (!hasValidRows) {
+          tbody.innerHTML = '<tr><td colspan="4">No data found.</td></tr>';
+        }
+      }
+      fetchData();
+    </script>
+  </body>
+</html>

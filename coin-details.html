@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumi Coin Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tailwind.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white font-poppins">
+  <section class="py-16 px-6 min-h-screen flex flex-col items-center justify-center">
+    <div class="max-w-4xl w-full mx-auto glass p-8 rounded-2xl shadow-2xl">
+      <h2 class="text-3xl sm:text-4xl font-bold text-green-300 mb-8 text-center animate-slideIn">💰 Lumi Coin Details</h2>
+      <input type="text" id="searchInput" placeholder="Search by Lumi ID or Name..." onkeyup="applySearch()" class="block mx-auto mb-6 px-4 py-2 w-full max-w-lg bg-gray-900 text-green-200 border border-green-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400" />
+      <div class="rounded-xl animate-slideIn">
+        <div class="hidden sm:block overflow-x-auto">
+          <table class="w-full border-collapse text-left">
+            <thead>
+              <tr class="bg-gradient-to-r from-green-700 to-emerald-600 text-white">
+                <th class="py-3 px-4">Lumi ID</th>
+                <th class="py-3 px-4">Name</th>
+                <th class="py-3 px-4">Total Points</th>
+                <th class="py-3 px-4">Total Coins</th>
+                <th class="py-3 px-4">Used Coins</th>
+                <th class="py-3 px-4">Remaining Coins</th>
+              </tr>
+            </thead>
+            <tbody id="coinTableBody" class="bg-black/60">
+              <tr><td colspan="6" class="py-6 text-center text-green-300">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden" id="coinCards"></div>
+      </div>
+      <script>
+      // Mobile card rendering for coin details
+      function renderMobileCoinCards() {
+        const container = document.getElementById('coinCards');
+        if (!container) return;
+        container.innerHTML = '';
+        let data = rawData;
+        const input = document.getElementById('searchInput')?.value?.toLowerCase() || '';
+        if (input) {
+          data = data.filter(row =>
+            row.id.toLowerCase().includes(input) ||
+            row.name.toLowerCase().includes(input)
+          );
+        }
+        if (!data.length) {
+          container.innerHTML = '<div class="py-6 text-center text-green-300">No data found.</div>';
+          return;
+        }
+        data.forEach(row => {
+          const card = document.createElement('div');
+          card.className = 'rounded-xl mb-6 p-4 shadow flex flex-col gap-2 border-l-4 border-yellow-400 bg-gradient-to-br from-gray-900/80 via-yellow-900/20 to-black/70';
+          card.innerHTML = `
+            <div class="flex justify-between"><span class="font-bold text-yellow-300">Lumi ID</span><span>${row.id}</span></div>
+            <div class="flex justify-between"><span class="font-bold text-yellow-300">Name</span><span>${row.name}</span></div>
+            <div class="flex justify-between"><span class="font-bold text-yellow-300">Total Points</span><span>${row.totalPoints}</span></div>
+            <div class="flex justify-between"><span class="font-bold text-yellow-300">Total Coins</span><span>${row.totalCoins}</span></div>
+            <div class="flex justify-between"><span class="font-bold text-yellow-300">Used Coins</span><span>${row.usedCoins}</span></div>
+            <div class="flex justify-between"><span class="font-bold text-yellow-300">Remaining Coins</span><span>${row.remainingCoins}</span></div>
+          `;
+          container.appendChild(card);
+        });
+      }
+      // Patch: Call mobile card render on search and data load
+      const origRenderTable = window.renderTable;
+      window.renderTable = function(data) {
+        origRenderTable(data);
+        if (window.innerWidth < 640) renderMobileCoinCards();
+      };
+      document.getElementById('searchInput').addEventListener('input', function() {
+        if (window.innerWidth < 640) renderMobileCoinCards();
+      });
+      window.addEventListener('resize', function() {
+        if (window.innerWidth < 640) renderMobileCoinCards();
+        else document.getElementById('coinCards').innerHTML = '';
+      });
+      </script>
+    </div>
+  </section>
+  <script>
+    let rawData = [];
+    function fetchData() {
+      fetch('https://script.google.com/macros/s/AKfycbzey4kjZxhNY5ycYMM_ch9At7HsCtOlTgW2wACcYDhyBW0_FFO2CSLWj07q10btpl-V0g/exec?action=getLumiCoinData')
+        .then(response => response.json())
+        .then(data => {
+          rawData = data;
+          renderTable(rawData);
+        })
+        .catch(() => {
+          document.getElementById('coinTableBody').innerHTML = '<tr><td colspan="6">Failed to load data.</td></tr>';
+        });
+    }
+    function renderTable(data) {
+      const tbody = document.getElementById('coinTableBody');
+      tbody.innerHTML = '';
+      if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="6">No data found.</td></tr>';
+        return;
+      }
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-3 px-4">${row.id}</td>
+          <td class="py-3 px-4">${row.name}</td>
+          <td class="py-3 px-4">${row.totalPoints}</td>
+          <td class="py-3 px-4">${row.totalCoins}</td>
+          <td class="py-3 px-4">${row.usedCoins}</td>
+          <td class="py-3 px-4">${row.remainingCoins}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    function applySearch() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = rawData.filter(row =>
+        row.id.toLowerCase().includes(input) ||
+        row.name.toLowerCase().includes(input)
+      );
+      renderTable(filtered);
+    }
+    fetchData();
+  </script>
+</body>
+</html>
