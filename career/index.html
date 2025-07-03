@@ -7,35 +7,57 @@
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../tailwind.min.css">
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white font-poppins">
-    <main class="container mx-auto p-8">
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white font-poppins flex flex-col min-h-screen">
+    <main class="container mx-auto p-8 flex-1">
         <h1 class="text-5xl font-extrabold text-center text-green-400 mb-10 tracking-tight drop-shadow-lg">Careers</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <!-- Lumi Poster Card -->
-            <div class="relative bg-gradient-to-br from-black/80 via-green-900/80 to-teal-900/80 border-2 border-green-700/60 rounded-3xl shadow-2xl p-8 flex flex-col items-center backdrop-blur-md bg-opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-green-400/30 hover:ring-4 hover:ring-green-400/30">
-                <div class="w-full aspect-square flex items-center justify-center mb-6">
-                    <img src="../lumi post.png" alt="Lumi Community Poster" class="w-full h-full object-contain p-2 rounded-2xl shadow-md">
-                </div>
-                <h2 class="text-2xl font-extrabold text-green-300 mb-2 text-center tracking-tight drop-shadow-lg">Lumi Community Poster</h2>
-                <p class="text-gray-200 text-center max-w-xs mx-auto mb-6">Discover the spirit of Lumi Community! Our poster highlights the mission, values, and vibrant opportunities available to all members. Join us and be part of something inspiring.</p>
-                <a href="#" class="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-green-400 via-green-500 to-teal-400 text-black font-bold shadow-lg hover:from-green-500 hover:to-green-600 hover:text-white hover:shadow-green-400/50 transition-all text-lg mt-2">
-                    <i class="fas fa-briefcase"></i>
-                    Apply Now
-                </a>
-            </div>
-            <!-- Card 1 Example -->
-            <div class="relative bg-gradient-to-br from-black/80 via-green-900/80 to-teal-900/80 border-2 border-green-700/60 rounded-3xl shadow-2xl p-8 flex flex-col items-center backdrop-blur-md bg-opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-green-400/30 hover:ring-4 hover:ring-green-400/30">
-                <div class="w-full aspect-square flex items-center justify-center mb-6">
-                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=500&q=80" alt="Frontend Developer" class="w-full h-full object-contain p-2 rounded-2xl shadow-md">
-                </div>
-                <h2 class="text-2xl font-extrabold text-green-300 mb-2 text-center tracking-tight drop-shadow-lg">Frontend Developer</h2>
-                <p class="text-gray-200 text-center max-w-xs mx-auto mb-6">Build beautiful, interactive UIs with React, Tailwind, and more. Collaborate with designers and backend engineers to deliver seamless user experiences.</p>
-                <a href="#" class="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-green-400 via-green-500 to-teal-400 text-black font-bold shadow-lg hover:from-green-500 hover:to-green-600 hover:text-white hover:shadow-green-400/50 transition-all text-lg mt-2">
-                    <i class="fas fa-briefcase"></i>
-                    Apply Now
-                </a>
-            </div>
-        
+        <div id="careers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-10 relative min-h-[200px]">
+          <div id="careers-spinner" class="fixed inset-0 flex flex-col items-center justify-center z-50 bg-gradient-to-br from-green-900/60 via-teal-800/60 to-black/70 backdrop-blur-sm">
+  <div class="relative flex items-center justify-center mb-6">
+    <span class="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-40 animate-ping"></span>
+    <span class="relative inline-flex rounded-full w-16 h-16 border-4 border-green-400 border-t-transparent border-b-transparent animate-spin shadow-xl"></span>
+  </div>
+  <div class="text-green-200 text-xl font-bold animate-pulse drop-shadow-lg tracking-wide">Loading Opportunities...</div>
+</div>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const endpoint = 'https://script.google.com/macros/s/AKfycbyNdfAN6Oilu_G70y3wEfRnK0lRFFJd3pCscdzAbjQMmvH5NxGLvrQnaqCotVFeDP8/exec';
+          const grid = document.getElementById('careers-grid');
+          const spinner = document.getElementById('careers-spinner');
+          spinner.style.display = 'flex';
+          fetch(endpoint)
+            .then(resp => resp.json())
+            .then(data => {
+              spinner.style.display = 'none';
+              grid.innerHTML = '';
+              data.forEach(card => {
+                const imgSrc = card.lh3Image || card.Photo || '';
+                const isClosed = (card.Status && card.Status.toLowerCase().includes('closed'));
+                const btnClass = isClosed
+                  ? 'inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gray-600 text-gray-300 font-bold shadow-lg cursor-not-allowed opacity-60 mt-2'
+                  : 'inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-green-400 via-green-500 to-teal-400 text-black font-bold shadow-lg hover:from-green-500 hover:to-green-600 hover:text-white hover:shadow-green-400/50 transition-all text-lg mt-2';
+                const btnIcon = '<i class="fas fa-briefcase"></i>';
+                const btnText = isClosed ? 'Registration Closed' : 'Apply Now';
+                const btnHref = isClosed ? '#' : (card.Registration_link || '#');
+                grid.innerHTML += `
+                  <div class="relative bg-gradient-to-br from-black/80 via-green-900/80 to-teal-900/80 border-2 border-green-700/60 rounded-3xl shadow-2xl p-8 flex flex-col items-center backdrop-blur-md bg-opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-green-400/30 hover:ring-4 hover:ring-green-400/30">
+                    <div class="w-full aspect-square flex items-center justify-center mb-6">
+                      <img src="${imgSrc}" alt="${card.Title || 'Career Poster'}" class="w-full h-full object-contain p-2 rounded-2xl shadow-md">
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-green-300 mb-2 text-center tracking-tight drop-shadow-lg">${card.Title || ''}</h2>
+                    <p class="text-gray-200 text-left leading-relaxed bg-black/10 p-4 rounded-xl w-full mb-6 whitespace-pre-line">${card.Discerption || ''}</p>
+                    <a href="${btnHref}" class="${btnClass}" ${isClosed ? 'tabindex="-1" aria-disabled="true"' : 'target="_blank" rel="noopener"'}>${btnIcon}${btnText}</a>
+                  </div>
+                `;
+              });
+            })
+            .catch(err => {
+              spinner.style.display = 'none';
+              grid.innerHTML = '<div class="col-span-2 text-center text-red-400 font-bold">Failed to load careers. Please try again later.</div>';
+            });
+        });
+        </script>
+
     </main>
     <footer class="w-full py-4 mt-16 bg-gradient-to-r from-sky-100 via-blue-50 to-cyan-100 text-center text-gray-600 text-sm shadow-inner">
         &copy; 2025 Lumi Community. All rights reserved.
