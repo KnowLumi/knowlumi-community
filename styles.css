@@ -5,8 +5,7 @@ html, body {
 }
 
 /* Glassmorphism Effect for Cards */
-
-
+.card {
   background: linear-gradient(135deg, rgba(0,255,255,0.13) 0%, rgba(255,0,255,0.10) 100%);
   border-radius: 2.2rem;
   box-shadow: 0 12px 48px 0 rgba(0,0,0,0.30);
@@ -21,6 +20,7 @@ html, body {
   margin: 0 auto;
 }
 
+.card-content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,40 +43,46 @@ html, body {
   z-index: 1;
 }
 
+.card-content p {
   font-family: inherit;
-}
-
   margin-bottom: 0.35em;
   font-size: 2.1rem;
   color: #fff;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.16));
 }
 
+.card-content:hover {
   transform: translateY(-6px) scale(1.06);
   filter: brightness(1.15) saturate(1.1);
-  box-shadow: 0 16px 48px 0 rgba(0,255,255,0.13), 0 0 0 8px rgba(255,255,255,0.12) inset;
+  box-shadow: 0 16px 48px 0 rgba(0,255,255,0.13), 
+              0 0 0 8px rgba(255,255,255,0.12) inset;
   z-index: 2;
 }
 
+/* Blue gradient background */
+.glass-btn-blue {
   background: linear-gradient(135deg, #4fd1ff 0%, #3182ce 100%);
 }
 
+/* Gold gradient background */
+.glass-btn-gold {
   background: linear-gradient(135deg, #ffe259 0%, #ffa751 100%);
   color: #222;
 }
 
-  color: #222;
-}
-
+/* Green gradient background */
+.glass-btn-green {
   background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
 }
+
 @media (max-width: 640px) {
-  
+  .card {
     flex-direction: column;
     padding: 1.2rem 0.7rem;
     gap: 1rem;
   }
   
+  .card-content {
     min-width: 0;
     width: 100%;
     margin: 0.5rem 0;
@@ -300,9 +306,9 @@ html {
 .gradient-title {
   background: linear-gradient(90deg, #4ade80 10%, #06b6d4 50%, #f472b6 90%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-fill-color: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 2px 16px #06b6d4aa);
   position: relative;
 }
@@ -385,12 +391,14 @@ html {
     100% { filter: blur(64px) brightness(1.15) hue-rotate(40deg); }
 }
 
+.icon-bubble-glass {
     box-shadow: 0 8px 40px 0 rgba(0,0,0,0.25), 0 0 0 4px rgba(255,255,255,0.07);
     backdrop-filter: blur(18px) saturate(1.2);
     background: rgba(255,255,255,0.13);
     border: 1.5px solid rgba(255,255,255,0.18);
     transition: box-shadow 0.3s, transform 0.3s;
 }
+
 .icon-bubble-glass:hover, .group:hover .icon-bubble-glass {
     box-shadow: 0 12px 60px 0 var(--tw-shadow-color, rgba(34,197,94,0.3)), 0 0 0 6px rgba(255,255,255,0.14);
     transform: scale(1.07) rotate(-3deg);

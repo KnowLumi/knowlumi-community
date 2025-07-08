@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tasks - Lumi Community</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @keyframes spin-slow {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+        }
+        .task-card {
+            background: linear-gradient(145deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+        
+        .task-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .task-complete {
+            position: relative;
+            background: linear-gradient(145deg, rgba(31, 41, 55, 0.6), rgba(17, 24, 39, 0.6));
+        }
+        
+        .task-complete .task-title {
+            text-decoration: line-through;
+            color: #9CA3AF;
+        }
+        
+        .task-points {
+            font-size: 0.85rem;
+            color: #FBBF24;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(251, 191, 36, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+        }
+        
+        .task-status {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        .task-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-900 bg-opacity-90 backdrop-blur-sm fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex-shrink-0 flex items-center">
+                        <span class="text-xl font-bold text-white">Lumi Community</span>
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <a href="dashboard.html" class="group relative inline-flex items-center px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs sm:text-sm font-medium rounded-lg overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl whitespace-nowrap">
+                        <span class="relative z-10 flex items-center">
+                            <i class="fas fa-arrow-left mr-1 sm:mr-2"></i>
+                            <span class="hidden sm:inline">Back to </span>Dashboard
+                        </span>
+                        <span class="absolute inset-0 bg-white bg-opacity-20 group-hover:bg-opacity-0 transition-all duration-300"></span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 animate-shimmer"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-white">My Tasks</h1>
+                <p class="text-gray-400 text-sm mt-1">Complete tasks to earn points</p>
+            </div>
+            <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                <button id="showAll" class="px-3 py-1.5 text-sm sm:px-4 sm:py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors whitespace-nowrap">
+                    All Tasks
+                </button>
+                <button id="showActive" class="px-3 py-1.5 text-sm sm:px-4 sm:py-2 rounded-lg bg-gray-700 text-white font-medium hover:bg-gray-600 transition-colors whitespace-nowrap">
+                    Active
+                </button>
+                <button id="showCompleted" class="px-3 py-1.5 text-sm sm:px-4 sm:py-2 rounded-lg bg-gray-700 text-white font-medium hover:bg-gray-600 transition-colors whitespace-nowrap">
+                    Completed
+                </button>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="relative mb-6">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <input type="text" id="searchInput" 
+                   class="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                   placeholder="Search tasks...">
+            <button id="clearSearch" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div id="tasksContainer" class="contents">
+                <!-- Tasks will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const tasksContainer = document.getElementById('tasksContainer');
+        const showAllBtn = document.getElementById('showAll');
+        const showActiveBtn = document.getElementById('showActive');
+        const showCompletedBtn = document.getElementById('showCompleted');
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        let searchQuery = '';
+        
+        // Google Apps Script URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzq0yOfcidCWAb8BRnSLhe2d9ijVFwPC6fIdyDTF8NXlS5FumgxtuvPltvk9W8rrsJj/exec';
+        
+        // Store tasks and user data
+        let tasks = [];
+        let userTasks = {};
+        let currentFilter = 'all';
+        const CACHE_DURATION = 1 * 60 * 1000; // 1 minute cache duration
+        
+        // Check if cached data is still valid
+        function getCachedData(key) {
+            const cached = localStorage.getItem(key);
+            if (!cached) return null;
+            
+            const { data, timestamp } = JSON.parse(cached);
+            const now = new Date().getTime();
+            
+            if (now - timestamp < CACHE_DURATION) {
+                return data;
+            }
+            return null;
+        }
+
+        // Cache data with timestamp
+        function cacheData(key, data) {
+            const cache = {
+                data,
+                timestamp: new Date().getTime()
+            };
+            localStorage.setItem(key, JSON.stringify(cache));
+        }
+
+        // Fetch tasks from Google Apps Script using fetch with CORS proxy
+        async function fetchTasks(forceRefresh = false) {
+            try {
+                // Get Lumi ID from localStorage/sessionStorage
+                const lumiId = localStorage.getItem('lumiId') || sessionStorage.getItem('lumiId');
+                if (!lumiId) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const cacheKey = `tasks_${lumiId}`;
+                const versionKey = `tasks_version_${lumiId}`;
+                
+                // Check if we should use cached data
+                if (!forceRefresh) {
+                    const cachedTasks = getCachedData(cacheKey);
+                    if (cachedTasks) {
+                        tasks = cachedTasks.tasks || [];
+                        userTasks = cachedTasks.userTasks || {};
+                        renderTasks(currentFilter);
+                        
+                        // If cache is older than 1 minute, update in background
+                        const lastUpdate = localStorage.getItem(`${cacheKey}_timestamp`);
+                        if (lastUpdate && (Date.now() - parseInt(lastUpdate)) > 60000) {
+                            fetchTasks(true);
+                        }
+                        return;
+                    }
+                }
+                
+                // Show centered loading state with animation
+                tasksContainer.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center min-h-[60vh]">
+                        <div class="relative w-20 h-20 mb-6">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-8 h-8 border-4 border-blue-400 border-b-transparent rounded-full animate-spin-slow"></div>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-medium text-white mb-2">Loading Your Tasks</h3>
+                        <p class="text-gray-400 text-center max-w-md">We're preparing your tasks. This will just take a moment...</p>
+                        <div class="mt-6 flex space-x-2">
+                            <div class="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                            <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                        </div>
+                    </div>`;
+                
+                // Direct fetch with CORS proxy
+                const proxyUrl = 'https://api.allorigins.win/get?url=';
+                const targetUrl = `${SCRIPT_URL}?lumiId=${encodeURIComponent(lumiId)}&t=${Date.now()}`; // Add timestamp to prevent caching
+                const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data = await response.json();
+                console.log('API Response:', data); // Debug log
+                
+                // Check if we got valid JSON in the contents
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data.contents);
+                } catch (e) {
+                    // If direct parse fails, try to handle the response directly
+                    console.log('Falling back to direct response handling');
+                    jsonData = data;
+                }
+                
+                if (jsonData && jsonData.success) {
+                    // Map the tasks to the expected format
+                    tasks = Array.isArray(jsonData.tasks) ? jsonData.tasks.map(task => ({
+                        id: task.id || 0,
+                        name: task.name || 'Unnamed Task',
+                        link: task.link || '',  // Include the link property
+                        points: task.points || 0
+                    })) : [];
+                    
+                    // Map user tasks
+                    userTasks = jsonData.userTasks || {};
+                    
+                    // Cache the data with timestamp
+                    cacheData(cacheKey, { tasks, userTasks });
+                    
+                    console.log(forceRefresh ? 'Fetched fresh data' : 'Using cached data');
+                    renderTasks(currentFilter);
+                    return jsonData;
+                } else {
+                    throw new Error(jsonData?.error || 'Failed to load tasks');
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                handleFetchError(error);
+                return;
+            }
+        }
+        
+        // Handle fetch errors with continuous loading
+        function handleFetchError(error) {
+            console.error('Error:', error);
+            // Keep showing loading state but with a different message
+            tasksContainer.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center min-h-[60vh] text-center p-6">
+                    <div class="relative w-20 h-20 mb-6">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-medium text-white mb-2">Almost There</h3>
+                    <p class="text-gray-400 text-center max-w-md">We're having trouble connecting to our servers. Trying again automatically...</p>
+                    <div class="mt-6 flex space-x-2">
+                        <div class="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+                        <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+                        <div class="w-3 h-3 bg-blue-600 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>`;
+            
+            // Auto-retry after delay
+            setTimeout(() => fetchTasks(true), 3000);
+        }
+        
+        // Render tasks based on filter
+        function renderTasks(filter = 'all') {
+            currentFilter = filter;
+            
+            if (!tasks || tasks.length === 0) {
+                // Keep showing loading animation when no tasks are found
+                tasksContainer.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center min-h-[60vh] text-center p-6">
+                        <div class="relative w-20 h-20 mb-6">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-8 h-8 border-4 border-blue-400 border-b-transparent rounded-full animate-spin-slow"></div>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-medium text-white mb-2">Loading Your Tasks</h3>
+                        <p class="text-gray-400 text-center max-w-md">We're preparing your tasks. This will just take a moment...</p>
+                        <div class="mt-6 flex space-x-2">
+                            <div class="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                            <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                        </div>
+                    </div>`;
+                // Try to fetch tasks again if we don't have any
+                if (tasks.length === 0) {
+                    setTimeout(() => fetchTasks(true), 2000);
+                }
+                return;
+            }
+            
+            // Filter tasks based on completion status and search query
+            const filteredTasks = tasks.filter(task => {
+                // Apply status filter
+                let statusMatch = true;
+                if (filter !== 'all') {
+                    const taskStatus = userTasks[task.name];
+                    statusMatch = filter === 'completed' 
+                        ? taskStatus?.completed 
+                        : !taskStatus?.completed;
+                }
+                
+                // Apply search filter
+                const searchMatch = !searchQuery || 
+                    task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()));
+                
+                return statusMatch && searchMatch;
+            });
+            
+            if (filteredTasks.length === 0) {
+                const message = filter === 'completed' 
+                    ? 'No completed tasks yet' 
+                    : 'No active tasks';
+                tasksContainer.innerHTML = `
+                    <div class="col-span-full text-center p-6 bg-gray-800/50 rounded-lg">
+                        <i class="fas fa-inbox text-3xl text-gray-500 mb-3"></i>
+                        <p class="text-gray-300">${message}</p>
+                    </div>`;
+                return;
+            }
+
+            // Render the tasks
+            tasksContainer.innerHTML = filteredTasks.map((task, index) => {
+                const taskStatus = userTasks[task.name] || {};
+                const isCompleted = taskStatus.completed || false;
+                const points = isCompleted ? task.points : 0;
+                const taskId = task.id || index;
+                
+                return `
+                    <div class="task-card p-5 hover:shadow-lg group" onclick="toggleTask(${index})">
+                        <div class="flex flex-col h-full">
+                            <div class="flex-1">
+                                <h3 class="task-title text-base font-medium text-white mb-3 line-clamp-2 leading-tight">
+                                    ${task.name || 'Untitled Task'}
+                                </h3>
+                                <div class="flex items-center justify-between mt-4">
+                                    <span class="task-points">
+                                        <i class="fas fa-coins mr-1"></i> ${task.points || 0} points
+                                    </span>
+                                    <span class="task-status ${isCompleted ? 'bg-green-900/20 text-green-400' : 'bg-blue-900/20 text-blue-400'}">
+                                        <i class="fas ${isCompleted ? 'fa-check-circle' : 'fa-spinner fa-pulse'} mr-1"></i>
+                                        ${isCompleted ? 'Completed' : 'In Progress'}
+                                    </span>
+                                </div>
+                            </div>
+                            ${task.points > 0 ? `
+                            <div class="mt-4 w-full bg-gray-700/30 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-300" 
+                                     style="width: ${Math.min(100, (points / task.points) * 100)}%">
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            ${task.link ? `
+                            <div class="mt-4 text-center">
+                                <a href="https://${task.link}" target="_blank" rel="noopener noreferrer" 
+                                   class="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                                    View Task
+                                    <i class="fas fa-external-link-alt ml-2 text-xs opacity-90"></i>
+                                </a>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+        
+        // Toggle task completion (this would need to be implemented in your Google Apps Script)
+        async function toggleTask(taskIndex) {
+            // In a real implementation, you would make an API call to update the task status
+            // For now, we'll just toggle the UI state
+            if (userTasks[taskIndex]) {
+                userTasks[taskIndex].completed = !userTasks[taskIndex].completed;
+            } else {
+                userTasks[taskIndex] = { completed: true };
+            }
+            renderTasks(currentFilter);
+        }
+
+        // Add refresh button functionality
+        function addRefreshButton() {
+            const refreshBtn = document.createElement('button');
+            refreshBtn.className = 'ml-3 text-gray-400 hover:text-white transition-colors';
+            refreshBtn.title = 'Refresh tasks';
+            refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+            refreshBtn.onclick = (e) => {
+                e.stopPropagation();
+                fetchTasks(true);
+            };
+            
+            const header = document.querySelector('main div.flex.justify-between.items-start');
+            if (header) {
+                header.querySelector('div').appendChild(refreshBtn);
+            }
+        }
+
+        // Update active filter button
+        function updateActiveButton(filter) {
+            currentFilter = filter;
+            
+            // Reset all buttons to default state
+            [showAllBtn, showActiveBtn, showCompletedBtn].forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-700', 'text-gray-300');
+            });
+            
+            // Set the active button
+            const activeBtn = {
+                'all': showAllBtn,
+                'active': showActiveBtn,
+                'completed': showCompletedBtn
+            }[filter];
+            
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-gray-700', 'text-gray-300');
+                activeBtn.classList.add('bg-blue-600', 'text-white');
+            }
+        }
+
+        // Search functionality
+        function handleSearch() {
+            searchQuery = searchInput.value.trim();
+            if (searchQuery === '') {
+                clearSearchBtn.classList.add('hidden');
+            } else {
+                clearSearchBtn.classList.remove('hidden');
+            }
+            renderTasks(currentFilter);
+        }
+        
+        // Event listeners for search
+        searchInput.addEventListener('input', handleSearch);
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchQuery = '';
+            clearSearchBtn.classList.add('hidden');
+            renderTasks(currentFilter);
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in
+            const lumiId = localStorage.getItem('lumiId') || sessionStorage.getItem('lumiId');
+            const isLoggedIn = localStorage.getItem('isLoggedIn') || sessionStorage.getItem('isLoggedIn');
+            
+            if (!isLoggedIn || !lumiId) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Set up filter buttons with click handlers
+            showAllBtn.addEventListener('click', () => {
+                updateActiveButton('all');
+                renderTasks('all');
+                localStorage.setItem('activeTaskFilter', 'all');
+                window.location.hash = 'all';
+            });
+            
+            showActiveBtn.addEventListener('click', () => {
+                updateActiveButton('active');
+                renderTasks('active');
+                localStorage.setItem('activeTaskFilter', 'active');
+                window.location.hash = 'active';
+            });
+            
+            showCompletedBtn.addEventListener('click', () => {
+                updateActiveButton('completed');
+                renderTasks('completed');
+                localStorage.setItem('activeTaskFilter', 'completed');
+                window.location.hash = 'completed';
+            });
+            
+            // Check URL hash first, then localStorage for saved filter, default to 'all'
+            const hashFilter = window.location.hash.replace('#', '');
+            const savedFilter = ['all', 'active', 'completed'].includes(hashFilter) 
+                ? hashFilter 
+                : localStorage.getItem('activeTaskFilter') || 'all';
+            
+            // Initial fetch and render with the saved filter
+            fetchTasks().then(() => {
+                updateActiveButton(savedFilter);
+                renderTasks(savedFilter);
+            });
+            
+            // Add visibility change handler to refresh data when returning to the tab
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    const lastUpdated = localStorage.getItem(`tasks_${lumiId}_timestamp`);
+                    if (lastUpdated && (Date.now() - parseInt(lastUpdated)) > 60000) {
+                        fetchTasks(true);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
